@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>AFE488C8-8973-4DF7-A2E8-39842101FF6F</string>
+	<key>IDESourceControlProjectName</key>
+	<string>BinaryLogicCal</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>26CE495FD4F3023A28936AE579689C345C6815ED</key>
+		<string>https://github.com/hujewelz/BinaryLogicCal.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>BinaryLogicCal.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>26CE495FD4F3023A28936AE579689C345C6815ED</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/hujewelz/BinaryLogicCal.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>26CE495FD4F3023A28936AE579689C345C6815ED</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>26CE495FD4F3023A28936AE579689C345C6815ED</string>
+			<key>IDESourceControlWCCName</key>
+			<string>BinaryLogicCal</string>
+		</dict>
+	</array>
+</dict>
+</plist>
