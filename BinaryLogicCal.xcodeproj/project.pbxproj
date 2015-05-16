@@ -424,6 +424,7 @@
 				51F9DC581B00A2F900537ADB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		51F9DC591B00A2F900537ADB /* Build configuration list for PBXNativeTarget "BinaryLogicCalTests" */ = {
 			isa = XCConfigurationList;
@@ -432,6 +433,7 @@
 				51F9DC5B1B00A2F900537ADB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

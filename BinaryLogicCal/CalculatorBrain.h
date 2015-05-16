@@ -8,9 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-@interface CalculatorBrain : NSObject
+typedef NS_ENUM(NSInteger, CBOperationType)
+{
+    CBOperationTypeReturn = 0,
+    CBOperationTypeAnd,
+    CBOperationTypeOr,
+    CBOperationTypeXor
+};
 
-- (NSString *)number:(NSString *)number operation:(NSString *)operation;
-- (void)calculateResult;
+@interface CalculatorBrain : NSObject
+@property (strong, nonatomic, readonly) NSString *result;
+- (NSString *)number:(NSString *)number operator:(NSString *)operator;
 - (void)clear;
 @end

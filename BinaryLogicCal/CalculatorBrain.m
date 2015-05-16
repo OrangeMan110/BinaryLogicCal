@@ -8,12 +8,12 @@
 
 #import "CalculatorBrain.h"
 @interface CalculatorBrain() {
-    //NSMutableArray *_result;
     NSMutableArray *_inputQueue;
-    //NSString *_finalAnswer;
-   // NSString *_showAnswer;
-    NSMutableArray *_inputNumber;
+    BOOL _isReturnOperation;
+    NSMutableArray *_returnO;
 }
+@property (strong, nonatomic) NSMutableArray *operandStack;
+@property (strong, nonatomic) NSMutableArray *operationQueue;
 @end
 
 @implementation CalculatorBrain
@@ -22,14 +22,51 @@
 {
     self = [super init];
     if (self) {
-        //_result = [NSMutableArray array];
         _inputQueue = [NSMutableArray array];
-        //_inputNumber = [NSMutableArray array];
-        //_finalAnswer = @"";
-        //_showAnswer = @"";
+        _result = @"";
     }
     return self;
 }
+
+- (NSMutableArray *)operandStack{
+    if (!_operandStack) {
+        _operandStack = [NSMutableArray array];
+    }
+    return _operandStack;
+}
+
+- (NSMutableArray *)operationQueue{
+    if (!_operationQueue) {
+        _operationQueue = [NSMutableArray array];
+    }
+    return _operationQueue;
+}
+
+
+- (void)pushOperand:(NSInteger)operand {
+    [self.operandStack addObject:@(operand)];
+}
+
+- (NSInteger)popOPerand {
+    NSNumber *integerObj = [self.operandStack lastObject];
+    if (integerObj) {
+        [self.operandStack removeLastObject];
+    }
+    return [integerObj integerValue];
+}
+
+- (void)pushOperation:(NSString *)operation {
+    [self.operationQueue addObject:operation];
+}
+
+- (NSString *)popOperation {
+   NSString *opetation = [self.operationQueue firstObject];
+    if (opetation) {
+        [self.operationQueue removeObjectAtIndex:0];
+    }
+    return opetation;
+}
+
 
 - (NSString *) turn10to2:(NSString *)str{
     int num = [str intValue];
@@ -43,85 +80,106 @@
     if (num == 0) {
         [result insertString:[NSString stringWithFormat:@"%d",num] atIndex:0];
     }
-    [_inputQueue addObject:result];
-    NSLog(@"input: %@", result);
+    
     return result;
 }
 
-//- (void)binaryCal:(NSString *)input {
-//    NSInteger aInterger = [input integerValue];
-//    NSInteger quotient = aInterger / 2;
-//    NSInteger remainder = aInterger % 2;
-//
-//    [_result addObject:@(remainder)];
-//    
-//   // NSLog(@"result: %@", _result);
-//    
-//    
-//    if (quotient != 0) {
-//        [self binaryCal:[NSString stringWithFormat:@"%d", quotient]];
-//    }
-//    //[_result removeAllObjects];
-//}
-//
-//- (void)finalAnswer:(NSString *)input {
-//    [self binaryCal:input];
-//    
-//    __block NSString *title = @"";
-//    [_result enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-//        title = [NSString stringWithFormat:@"%@", obj];
-//        //NSLog(@"string :%@ ", title);
-//        _finalAnswer = [_finalAnswer stringByAppendingString:title];
-//    }];
-//    [_inputQueue addObject:_finalAnswer];
-//    //NSLog(@"_finalAnswer: %@", _finalAnswer);
-//    [_result removeAllObjects];
-//    
-//}
+- (NSString *)number:(NSString *)number operator:(NSString *)operator {
+    if (_isReturnOperation) {
+        if (self.operationQueue.count == 0) {
+            //operation after return;
+            if ([self operationType:operator] != CBOperationTypeReturn) {
+                number = _result;
+                [_inputQueue removeAllObjects];
+                [_inputQueue addObject:number];
+                _isReturnOperation = NO;
 
-- (NSString *)number:(NSString *)number operation:(NSString *)operation {
+            } else {
+                return _result;
+            }
+        }
+    } else {
+        [self pushOperand:[number integerValue]];
+        [_inputQueue addObject: [self turn10to2:number]];
+    }
     
-    [_inputNumber addObject:@([number integerValue])];
-    NSLog(@"输入的数： %@", _inputNumber);
+    //first operator is return
+    if ([self operationType:operator] == CBOperationTypeReturn) {
+        _isReturnOperation = YES;
+        if (self.operandStack.count >= 1 && self.operationQueue.count==0) {
+            _result = [self turn10to2:number];
+            //[self.operandStack removeAllObjects];
+            return [@" = " stringByAppendingString:_result];
+        }
+        
+    } else {
+        [self pushOperation:operator];
+    }
     
-//    if ([operation integerValue] == 0) {
-//        [_result removeAllObjects];
-//        //[_inputQueue removeAllObjects];
-//        _finalAnswer = @"";
-//    }
-    //[self binaryCal:number];
-    //[self finalAnswer:number];
-    [self turn10to2:number];
-    [_inputQueue addObject:@" "];
-    [_inputQueue addObject:operation];
-     [_inputQueue addObject:@" "];
+    NSLog(@"输入栈中的数为： %@", self.operandStack);
+    NSLog(@"符号队列中的数为： %@", self.operationQueue);
+    
+    if (self.operandStack.count > 1) {
+        [self calculateResult];
+    }
+    
+    NSString *op = [NSString stringWithFormat:@" %@ ", operator];
+    [_inputQueue addObject:op];
 
     NSString *re = @"";
     for (NSString *str in _inputQueue) {
-        //NSLog(@"---%@", str);
         re = [re stringByAppendingString:str];
     }
-     NSLog(@"结果 :%@ ", re);
+    
+    // NSLog(@"result :%@ ", re);
+    
     return re;
 }
 
-//- (void)calculateResult {
-//    if (_inputNumber.count < 2) return;
-//    
-//    [_result removeAllObjects];
-//        //[_inputQueue removeAllObjects];
-//    _finalAnswer = @"";
-//    
-//    int a = 8;
-//    int b = 1;
-//    int r = a | b;
-//    
-//    //[self finalAnswer:[NSString stringWithFormat:@"%d", r]];
-//    NSLog(@"finalAnswer: %@",[self turn10to2:[NSString stringWithFormat:@"%d", r]]);
-//}
+
+- (void)calculateResult {
+    if (self.operationQueue.count > 0) {
+        NSInteger result;
+        
+        CBOperationType operatorType = [self operationType:[self popOperation]];
+        switch (operatorType) {
+            case CBOperationTypeOr:
+                result = [self popOPerand] | [self popOPerand];
+                break;
+            case CBOperationTypeAnd:
+                result = [self popOPerand] & [self popOPerand];
+                break;
+            case CBOperationTypeXor:
+                result = [self popOPerand] ^ [self popOPerand];
+                break;
+            default:
+                break;
+        }
+        
+        [self pushOperand:result];
+        
+        _result = [self turn10to2:[NSString stringWithFormat:@"%ld", result]];
+    }
+}
+
+
+- (CBOperationType)operationType:(NSString *)operator {
+    if ([operator isEqualToString:@"="]) {
+        return CBOperationTypeReturn;
+    } else if ([operator isEqualToString:@"|"]) {
+        return CBOperationTypeOr;
+    } else if ([operator isEqualToString:@"&"]) {
+        return CBOperationTypeAnd;
+    }else
+        return CBOperationTypeXor;
+}
 
 - (void)clear {
     [_inputQueue removeAllObjects];
+    [self.operandStack removeAllObjects];
+    [self.operationQueue removeAllObjects];
+    _result = nil;
+    _isReturnOperation = NO;
 }
 
 @end
